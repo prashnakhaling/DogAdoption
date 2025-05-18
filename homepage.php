@@ -30,8 +30,6 @@
         <button>Login</button>
         <button>Sign Up</button>
         <button>Logout</button>
-        <button>Logout</button>
-
 
     </aside>
 </div>
