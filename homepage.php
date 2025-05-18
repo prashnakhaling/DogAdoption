@@ -1,17 +1,8 @@
 <!DOCTYPE html>
 <title>Dog Adoption</title>
 <link rel="stylesheet" href="adoptionstyle.css">
-<script>
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('show');
-    }
+<script src="adoption.js"></script>
 
-    function closeSidebar() {
-        document.getElementById('sidebar').classList.remove('show');
-        document.getElementById('overlay').classList.remove('show');
-    }
-</script>
 <div class="dogadotion-main">
     <header>
         <nav class="header-nav">
@@ -30,6 +21,8 @@
         <button>Login</button>
         <button>Sign Up</button>
         <button>Logout</button>
+        <button>Logout</button>
+
 
     </aside>
 </div>
