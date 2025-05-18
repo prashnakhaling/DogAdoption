@@ -27,10 +27,10 @@
     </header>
     <aside class="sidebar" id="sidebar">
         <div class="close-btn" onclick="closeSidebar()">✖</div>
-        <button>Login</button>
-        <button>Sign Up</button>
+        <button ><a href ="login.php"></a>Login</button>
+        <button><a href ="signup.php"></a>Sign Up</button>
         <button>Logout</button>
-        <button>Logout</button>
+        
 
 
     </aside>
