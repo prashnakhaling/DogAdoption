@@ -18,7 +18,7 @@
     </header>
     <aside class="sidebar" id="sidebar">
         <div class="close-btn" onclick="closeSidebar()">✖</div>
-        <button ><a href ="login.php"></a>Login</button>
+        <button ><a href ="login.php">Login</a></button>
         <button><a href ="signup.php">Sign Up</a></button>
         <button>Logout</button>
         

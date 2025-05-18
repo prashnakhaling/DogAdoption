@@ -8,3 +8,4 @@
         document.getElementById('sidebar').classList.remove('show');
         document.getElementById('overlay').classList.remove('show');
     }
+    
