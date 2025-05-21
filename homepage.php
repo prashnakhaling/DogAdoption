@@ -27,7 +27,6 @@
                     <a href="#">Home</a>
                     <a href="#">About</a>
                     <a href="#">Dogs</a>
-                    <a href="#">Contact</a>
                 </nav>
             </div>
 
@@ -40,6 +39,9 @@
             <!-- Login Form -->
             <div id="loginForm" class="form-container">
                 <form action="/submit_login" method="POST">
+
+                    <h2>Log In</h2>
+
                     <label for="login-name">Name:</label><br>
                     <input type="text" id="loginUsername" placeholder="Username" required><br><br>
 
@@ -77,6 +79,7 @@
             </div>
 
         </header>
+
     </div>
 
 
