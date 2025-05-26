@@ -23,17 +23,23 @@
             <div class="main-content">
                 <header>
                     <div class="navbar">
-                        <h1><img src="images\dogadoption-logo.png" alt="littlepaws" class="dogadoptionlogo"></h1>
+                        <div>
+                            <h1>
+                                <a href="homepage.php">
+                                    <img src="images\dogadoption-logo.png" alt="littlepaws" class="dogadoptionlogo">
+                            </h1>
+                            </a>
+                        </div>
                         <nav class="nav-elements">
-                           <a href="">About</a>
-                           <a href="">Dog Adoption</a>
-                           <a href="">Contact Us</a>
-                        </nav>
-                        <!-- <form action="/search" method="GET">
-                                <input type="text" name="q" placeholder="Search..." />
+                            <a href="">About</a>
+                            <a href="">Dog Adoption</a>
+                            <a href="">Contact Us</a>
+                            <form action="/search" method="GET">
+                                <input type="text" name="q" placeholder="Search..." class="searchbar" />
                                 <button type="submit">Search</button>
-                            </form> -->
-                        <button class="menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+                            </form>
+                            <button class="menu-btn" onclick="toggleSidebar()">☰ Menu</button>
+                        </nav>
 
                     </div>
 

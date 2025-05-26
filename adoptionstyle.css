@@ -112,7 +112,13 @@ header {
   font-size: 16px;
 }
 .dogadoptionlogo {
-  height: 120px;
+  height: 110px;
+}
+.menu-btn {
+  margin-left: 15px;
+}
+.searchbar {
+  margin-left: 15px;
 }
 
 .hero {
