@@ -1,25 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sign Up Form</title>
-</head>
-<body>
-    <h2>Sign Up</h2>
-    <form action="/submit_signup" method="POST">
-        <label for="name">Full Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect and sanitize input
+    $username = htmlspecialchars(trim($_POST['username']));
+    $phone = htmlspecialchars(trim($_POST['phone']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $password = htmlspecialchars(trim($_POST['password']));
 
-        <label for="phone">Phone Number:</label><br>
-        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="1234567890" required><br><br>
+    // Initialize error array
+    $errors = [];
 
-        <label for="email">Email Address:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+    // Validate username
+    if (empty($username)) {
+        $errors[] = "Username is required.";
+    }
 
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+    // Validate phone (10 digits)
+    if (!preg_match("/^[0-9]{10}$/", $phone)) {
+        $errors[] = "Phone number must be 10 digits.";
+    }
 
-        <input type="submit" value="Sign Up">
-    </form>
-</body>
-</html>
+    // Validate email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format.";
+    }
+
+    // Validate password (min 6 characters)
+    if (strlen($password) < 6) {
+        $errors[] = "Password must be at least 6 characters long.";
+    }
+
+    if (empty($errors)) {
+        // Normally here you would insert into a database
+        echo "<h2>Signup successful!</h2>";
+        echo "Username: $username<br>";
+        echo "Phone: $phone<br>";
+        echo "Email: $email<br>";
+        // Never show password in real application
+    } else {
+        echo "<h2>Signup failed due to the following errors:</h2>";
+        echo "<ul>";
+        foreach ($errors as $error) {
+            echo "<li>$error</li>";
+        }
+        echo "</ul>";
+    }
+} else {
+    echo "Invalid request.";
+}
+?>
