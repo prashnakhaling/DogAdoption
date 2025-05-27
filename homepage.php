@@ -29,6 +29,7 @@
                                     <img src="images\dogadoption-logo.png" alt="littlepaws" class="dogadoptionlogo">
                             </h1>
                             </a>
+                            <a href=""></a>
                         </div>
                         <nav class="nav-elements">
                             <a href="">About</a>
