@@ -35,10 +35,10 @@
                             <a href="">About</a>
                             <a href="">Dog Adoption</a>
                             <a href="">Contact Us</a>
-                            <form action="/search" method="GET">
+                            <!-- <form action="/search" method="GET">
                                 <input type="text" name="q" placeholder="Search..." class="searchbar" />
                                 <button type="submit">Search</button>
-                            </form>
+                            </form> -->
                             <button class="menu-btn" onclick="toggleSidebar()">☰ Menu</button>
                         </nav>
 
