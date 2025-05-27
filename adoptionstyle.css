@@ -1,5 +1,6 @@
 * {
   /* margin: 0; */
+  color: black;
   box-sizing: border-box;
 }
 .container {
@@ -159,7 +160,7 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(255, 255, 255, 0.95);
-  padding: 30px;
+  padding: 11px;
   border-radius: 10px;
   width: 300px;
   display: none;

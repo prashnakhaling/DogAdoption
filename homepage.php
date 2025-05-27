@@ -86,7 +86,7 @@
                         </form>
 
                         <button onclick="signupUser()">Sign Up</button>
-                        <h5>Create new Account</h5>
+                        <h5>Already have an account?</h5>
 
                         </form>
 

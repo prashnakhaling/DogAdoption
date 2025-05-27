@@ -17,16 +17,16 @@ document.addEventListener('click', function (event) {
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
 
-    // If the click was outside the sidebar
-    if (!sidebar.contains(event.target)) {
+    // If the click was outside the sidebar and both forms
+    if (
+        !sidebar.contains(event.target) &&
+        !loginForm.contains(event.target) &&
+        !signupForm.contains(event.target)
+    ) {
         loginForm.style.display = 'none';
         signupForm.style.display = 'none';
     }
 });
-
-function logout() {
-    alert("Logging out...");
-}
 
 function loginUser() {
     alert("Logging in...");
