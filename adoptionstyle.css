@@ -3,6 +3,7 @@
   color: black;
   box-sizing: border-box;
 }
+
 .container {
   /* display: flex; */
   width: 100%;
@@ -12,6 +13,7 @@
 .container.show-sidebar .sidebar {
   /* width: 220px; */
 }
+
 body {
   font-family: "Segoe UI", sans-serif;
   display: flex;
@@ -21,7 +23,8 @@ body {
 .sidebar {
   position: fixed;
   top: 8px;
-  right: -265px; /* Hide off-screen to the right */
+  right: -265px;
+  /* Hide off-screen to the right */
   width: 265px;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.9);
@@ -30,9 +33,11 @@ body {
   z-index: 1000;
   color: white;
 }
+
 .sidebar.show {
   right: 0;
 }
+
 .close-btn {
   position: absolute;
   max-width: 40px;
@@ -59,14 +64,17 @@ body {
 .sidebar button:hover {
   background-color: #b1a2e7;
 }
+
 .main-content {
   margin-left: 0;
   transition: margin-left 0s ease;
 }
 
 .main-content.shrink {
-  margin-right: 280px; /* Matches the sidebar width */
+  margin-right: 280px;
+  /* Matches the sidebar width */
 }
+
 /* Main wrapper that shifts when sidebar is visible */
 .wrapper {
   transition: margin-right 0.3s ease;
@@ -74,7 +82,8 @@ body {
 }
 
 .wrapper.shifted {
-  margin-right: px; /* Same width as sidebar */
+  margin-right: px;
+  /* Same width as sidebar */
 }
 
 header {
@@ -88,6 +97,7 @@ header {
   justify-content: space-between;
   position: relative;
 }
+
 .nav-elements {
   display: flex;
 }
@@ -112,12 +122,15 @@ header {
   color: black;
   font-size: 16px;
 }
+
 .dogadoptionlogo {
   height: 110px;
 }
+
 .menu-btn {
   margin-left: 15px;
 }
+
 .searchbar {
   margin-left: 15px;
 }
@@ -228,5 +241,5 @@ header {
     padding-bottom: 100px;
   }
 }
-#searchbar {
-}
+
+#searchbar {}
