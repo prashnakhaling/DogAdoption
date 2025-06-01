@@ -52,8 +52,8 @@
             </div>
 
             <!-- Sign Up Form -->
-            <div id="signupForm" >
-                                <h2>Sign Up</h2>
+            <div id="signupForm">
+                <h2>Sign Up</h2>
                 <form action="signup.php" method="POST">
                     <label for="name">Full Name:</label><br>
                     <input type="text" id="name" name="name" required><br><br>
@@ -124,18 +124,18 @@
             <p>2-year-old Golden Retriever</p>
         </div>
         <div class="dog-card">
-            <img src="images/buddy.jfif " alt="Dog 2" />
+            <img src="images/dd1.jfif " alt="Dog 2" />
             <h3>Luna</h3>
             <p>3-year-old German Shepherd</p>
         </div>
         <div class="dog-card">
-            <img src="images/buddy.jfif" alt="Dog 3" />
-            <h3>Luna</h3>
+            <img src="images/luna.jfif" alt="Dog 3" />
+            <h3>Max</h3>
             <p>3-year-old German Shepherd</p>
         </div>
         <div class="dog-card">
-            <img src="images/buddy.jfif" alt="Dog 4" />
-            <h3>Luna</h3>
+            <img src="images/dd3.jfif" alt="Dog 4" />
+            <h3>Lucy</h3>
             <p>3-year-old German Shepherd</p>
         </div>
         <section class="viewmore">
@@ -147,38 +147,38 @@
         <section class="dogs-showcase">
             <!-- Repeat dog cards or dynamically load -->
             <div class="dog-card">
-                <img src="images/buddy.jfif" alt="Dog 1" />
-                <h3>Buddy</h3>
+                <img src="images/dd4.jfif" alt="Dog 1" />
+                <h3>Bailey</h3>
                 <p>2-year-old Golden Retriever</p>
             </div>
             <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 2" />
-                <h3>Luna</h3>
+                <img src="images/dd8.jfif" alt="Dog 2" />
+                <h3>Rocky</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 3" />
-                <h3>Luna</h3>
+                <img src="images/dd6.jfif" alt="Dog 3" />
+                <h3>Cooper</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 4" />
-                <h3>Luna</h3>
+                <img src="images/dd7.jfif" alt="Dog 4" />
+                <h3>Daisy</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 2" />
-                <h3>Luna</h3>
+                <img src="images/dd5.jfif" alt="Dog 2" />
+                <h3>Charlie</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 3" />
-                <h3>Luna</h3>
+                <img src="images/dd2.jfif" alt="Dog 3" />
+                <h3>Bella</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 4" />
-                <h3>Luna</h3>
+                <img src="images/dd9.jfif" alt="Dog 4" />
+                <h3>Teddy</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <!-- Add more dog-cards as needed -->
