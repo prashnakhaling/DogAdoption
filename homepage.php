@@ -12,7 +12,7 @@
     <html lang="en">
 
     <head>
-        
+
     </head>
 
 <body>
@@ -39,18 +39,36 @@
             <!-- Login Form -->
             <div id="loginForm">
                 <h2>Login</h2>
-                <input type="text" placeholder="Username" style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                <input type="password" placeholder="Password" style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                <button style="padding:0.5rem 1rem;">Sign In</button>
+                <form action="login.php" method="POST">
+                    <label for="login-name">Name:</label><br>
+                    <input type="text" id="login-name" name="name" required><br><br>
+
+                    <label for="login-password">Password:</label><br>
+                    <input type="password" id="login-password" name="password" required><br><br>
+
+                    <input type="submit" value="Log In">
+                    <h5><a href="signup.html">Create new Account</a></h5>
+                </form>
             </div>
 
             <!-- Sign Up Form -->
-            <div id="signupForm" style="display:none;">
-                <h2>Sign Up</h2>
-                <input type="text" placeholder="Username" style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                <input type="email" placeholder="Email" style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                <input type="password" placeholder="Password" style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                <button style="padding:0.5rem 1rem;">Register</button>
+            <div id="signupForm" >
+                                <h2>Sign Up</h2>
+                <form action="signup.php" method="POST">
+                    <label for="name">Full Name:</label><br>
+                    <input type="text" id="name" name="name" required><br><br>
+
+                    <label for="phone">Phone Number:</label><br>
+                    <input type="tel" id="phone" name="phone" placeholder="1234567890" required><br><br>
+
+                    <label for="email">Email Address:</label><br>
+                    <input type="email" id="email" name="email" required><br><br>
+
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required><br><br>
+
+                    <input type="submit" value="Sign Up">
+                </form>
             </div>
 
             <!-- Close Button -->
