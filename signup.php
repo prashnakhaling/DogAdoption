@@ -1,25 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sign Up Form</title>
-</head>
-<body>
-    <h2>Sign Up</h2>
-    <form action="/submit_signup" method="POST">
-        <label for="name">Full Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
+<?php
+$conn = new mysqli("localhost", "root", "", "dogadoption");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-        <label for="phone">Phone Number:</label><br>
-        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="1234567890" required><br><br>
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Sanitize and validate input
+    $name = trim($_POST['name']);
+    $phone = trim($_POST['phone']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
-        <label for="email">Email Address:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+    if (empty($name) || empty($phone) || empty($email) || empty($password)) {
+        die("❌ All fields are required.");
+    }
 
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+    if (!preg_match('/^\d{10}$/', $phone)) {
+        die("❌ Phone number must be 10 digits.");
+    }
 
-        <input type="submit" value="Sign Up">
-    </form>
-</body>
-</html>
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die("❌ Invalid email format.");
+    }
+
+    if (strlen($password) < 6) {
+        die("❌ Password must be at least 6 characters.");
+    }
+
+    // Check if email already exists
+    $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $check->bind_param("s", $email);
+    $check->execute();
+    $check->store_result();
+    if ($check->num_rows > 0) {
+        die("❌ Email already registered.");
+    }
+
+    // Hash password and insert
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("INSERT INTO users (name, phone, email, password, role) VALUES (?, ?, ?, ?, 'user')");
+    $stmt->bind_param("ssss", $name, $phone, $email, $hashedPassword);
+
+    if ($stmt->execute()) {
+        echo "✅ Registration successful!";
+    } else {
+        echo "❌ Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
