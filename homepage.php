@@ -60,15 +60,18 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
                     <p>Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
                 </div>
 
-                <!-- Signup Form -->
-                <div id="signupForm" style="display: none;">
-                    <h2>Sign Up</h2>
-                    <form id="signupFormElement" action="signup.php" method="POST">
-                        <label for="newUsername">Username:</label><br>
-                        <input type="text" id="newUsername" name="newUsername" value="<?= htmlspecialchars($username ?? '') ?>" required><br><br>
+            <!-- Sign Up Form -->
+            <div id="signupForm" >
+                                <h2>Sign Up</h2>
+                <form action="signup.php" method="POST">
+                    <label for="name">Full Name:</label><br>
+                    <input type="text" id="name" name="name" required><br><br>
 
-                        <label for="newEmail">Email:</label><br>
-                        <input type="email" id="newEmail" name="newEmail" value="<?= htmlspecialchars($email ?? '') ?>" required><br><br>
+                    <label for="phone">Phone Number:</label><br>
+                    <input type="tel" id="phone" name="phone" placeholder="1234567890" required><br><br>
+
+                    <label for="email">Email Address:</label><br>
+                    <input type="email" id="email" name="email" required><br><br>
 
                         <label for="newPassword">Password:</label><br>
                         <input type="password" id="newPassword" name="newPassword" required><br><br>
@@ -120,83 +123,81 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
             </p>
         </div>
 
-        <section id="dogs-showcase" class="dogs-showcase">
+    <section id="dogs-showcase" class="dogs-showcase">
+        <div class="dog-card">
+            <img src="buddy.jpg" alt="Dog 1" />
+            <h3>Buddy</h3>
+            <p>2-year-old Golden Retriever</p>
+        </div>
+        <div class="dog-card">
+            <img src="luna.jfif " alt="Dog 2" />
+            <h3>Luna</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="luna.jpg" alt="Dog 3" />
+            <h3>Luna</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="luna.jpg" alt="Dog 4" />
+            <h3>Luna</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <section class="viewmore">
+            <button onclick="showhideUsers()" class="btn">View More</button>
+        </section>
+    </section>
+
+    <section id="userSection" class="users-section hide">
+        <section class="dogs-showcase">
+            <!-- Repeat dog cards or dynamically load -->
             <div class="dog-card">
-                <img src="images/buddy.jfif" alt="Dog 1" />
+                <img src="buddy.jpg" alt="Dog 1" />
                 <h3>Buddy</h3>
                 <p>2-year-old Golden Retriever</p>
             </div>
             <div class="dog-card">
-                <img src="images/buddy.jfif " alt="Dog 2" />
+                <img src="luna.jpg" alt="Dog 2" />
                 <h3>Luna</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/buddy.jfif" alt="Dog 3" />
+                <img src="luna.jpg" alt="Dog 3" />
                 <h3>Luna</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
             <div class="dog-card">
-                <img src="images/buddy.jfif" alt="Dog 4" />
+                <img src="luna.jpg" alt="Dog 4" />
                 <h3>Luna</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
-            <section class="viewmore">
-                <button onclick="showhideUsers()" class="btn">View More</button>
-            </section>
-        </section>
-
-        <section id="userSection" class="users-section hide">
-            <section class="dogs-showcase">
-                <!-- Repeat dog cards or dynamically load -->
-                <div class="dog-card">
-                    <img src="images/buddy.jfif" alt="Dog 1" />
-                    <h3>Buddy</h3>
-                    <p>2-year-old Golden Retriever</p>
-                </div>
-                <div class="dog-card">
-                    <img src="images/luna.jfif" alt="Dog 2" />
-                    <h3>Luna</h3>
-                    <p>3-year-old German Shepherd</p>
-                </div>
-                <div class="dog-card">
-                    <img src="images/luna.jfif" alt="Dog 3" />
-                    <h3>Luna</h3>
-                    <p>3-year-old German Shepherd</p>
-                </div>
-                <div class="dog-card">
-                    <img src="images/luna.jfif" alt="Dog 4" />
-                    <h3>Luna</h3>
-                    <p>3-year-old German Shepherd</p>
-                </div>
-                <div class="dog-card">
-                    <img src="images/luna.jfif" alt="Dog 2" />
-                    <h3>Luna</h3>
-                    <p>3-year-old German Shepherd</p>
-                </div>
-                <div class="dog-card">
-                    <img src="images/luna.jfif" alt="Dog 3" />
-                    <h3>Luna</h3>
-                    <p>3-year-old German Shepherd</p>
-                </div>
-                <div class="dog-card">
-                    <img src="images/luna.jfif" alt="Dog 4" />
-                    <h3>Luna</h3>
-                    <p>3-year-old German Shepherd</p>
-                </div>
-                <!-- Add more dog-cards as needed -->
-            </section>
-        </section>
-        <footer class="simple-footer">
-            <div class="footer-content" id="contact-section">
-                <div class="footer-content">
-                    <p>&copy; 2025 Happy Tails Dog Adoption</p>
-                    <p>Email: info@dogadoption.org | Phone: (123) 456-7890</p>
-                </div>
+            <div class="dog-card">
+                <img src="luna.jpg" alt="Dog 2" />
+                <h3>Luna</h3>
+                <p>3-year-old German Shepherd</p>
             </div>
-        </footer>
-    </div>
-
+            <div class="dog-card">
+                <img src="luna.jpg" alt="Dog 3" />
+                <h3>Luna</h3>
+                <p>3-year-old German Shepherd</p>
+            </div>
+            <div class="dog-card">
+                <img src="luna.jpg" alt="Dog 4" />
+                <h3>Luna</h3>
+                <p>3-year-old German Shepherd</p>
+            </div>
+            <!-- Add more dog-cards as needed -->
+        </section>
+    </section>
+    <footer class="simple-footer">
+        <div class="footer-content" id="contact-section">
+            <div class="footer-content">
+                <p>&copy; 2025 Happy Tails Dog Adoption</p>
+                <p>Email: info@dogadoption.org | Phone: (123) 456-7890</p>
+            </div>
+        </div>
+    </footer>
 
 </body>
 
