@@ -1,53 +1,44 @@
 <?php
+// Include database connection
+include('dataconnection.php');
 session_start();
 
-// Database connection
-$conn = new mysqli("localhost", "root", "", "dogadoption");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Only process if form is submitted via POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $name = trim($_POST['name']);
-    $password = trim($_POST['password']);
+    // Get and sanitize input
+    $username = trim($_POST["username"] ?? '');
+    $password = trim($_POST["password"] ?? '');
 
-    // Validate empty fields
-    if (empty($name) || empty($password)) {
-        die("❌ Both name and password are required.");
+    $errors = [];
+
+    // Validate fields
+    if (empty($username)) {
+        $errors[] = "Username is required.";
     }
 
-    // Prepare and execute query to find user by name
-    $stmt = $conn->prepare("SELECT * FROM users WHERE name = ?");
-    $stmt->bind_param("s", $name);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    }
 
-    // Check user exists
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-
-        // Verify password
-        if (password_verify($password, $user['password'])) {
-            // Set session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-
-            // Redirect based on role
-            if ($user['role'] === 'admin') {
-                header("Location: admindashboard.php");
+    // If no errors, check credentials
+    if (empty($errors)) {
+        // Check username
+        if ($username === $storedUsername) {
+            // Verify password hash
+            if (password_verify($password, $storedPasswordHash)) {
+                // Success - Set session or redirect
+                $_SESSION['username'] = $username;
+                echo "Login successful. Welcome, " . htmlspecialchars($username) . "!";
+                // Redirect to dashboard (uncomment this in real use)
+                header("Location:adoptdog.php");
+                exit;
             } else {
-                header("Location: homepage.php");
+                $errors[] = "Invalid password.";
             }
-            exit;
         } else {
-            echo "❌ Incorrect password.";
+            $errors[] = "Username not found.";
         }
-    } else {
-        echo "❌ User not found.";
     }
 
-    $stmt->close();
-    $conn->close();
+    // Show errors if any
+
 }
-?>

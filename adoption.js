@@ -1,67 +1,37 @@
-function loadPage(pageUrl) {
-    fetch(pageUrl)
-        .then((response) => response.text())
-        .then((html) => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            const bodyContent = doc.body.innerHTML;
-            document.getElementById("slide-content").innerHTML = bodyContent;
-            document
-                .getElementById("page-slide-container")
-                .classList.add("open");
-        })
-        .catch((err) => console.error("Failed to load page:", err));
-}
+// for log in 
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = document.getElementById('authModal');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
 
-function closeSlide() {
-    document
-        .getElementById("page-slide-container")
-        .classList.remove("open");
-}
+  document.getElementById('loginLink').addEventListener('click', function (e) {
+    e.preventDefault();
+    modal.style.display = 'block';
+    loginForm.style.display = 'block';
+    signupForm.style.display = 'none';
+  });
 
-function showhideUsers() {
-    const userSection = document.getElementById("userSection");
-    const viewMoreButton = document.querySelector(".viewmore");
+  document.getElementById('showSignup').addEventListener('click', function (e) {
+    e.preventDefault();
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+  });
 
-    userSection.classList.toggle("hide");
+  document.getElementById('showLogin').addEventListener('click', function (e) {
+    e.preventDefault();
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
+  });
 
-    if (!userSection.classList.contains("hide")) {
-        // Move the button inside at the end
-        userSection.appendChild(viewMoreButton);
-
-        // Scroll into view
-        userSection.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
+  // Close modal if clicking outside the modal content
+  window.addEventListener('click', function (e) {
+    if (e.target === modal) {
+      modal.style.display = 'none';
     }
-}
+  });
+});
 
-
-function showLoginModal() {
-    document.getElementById('loginModal').style.display = 'flex';
-    showTab('login'); // Default to login tab
-}
-
-function hideLoginModal() {
-    document.getElementById('loginModal').style.display = 'none';
-}
-
-function showTab(tab) {
-    const loginForm = document.getElementById('loginForm');
-    const signupForm = document.getElementById('signupForm');
-    const loginTab = document.getElementById('loginTab');
-    const signupTab = document.getElementById('signupTab');
-
-    if (tab === 'login') {
-        loginForm.style.display = 'block';
-        signupForm.style.display = 'none';
-        loginTab.style.fontWeight = 'bold';
-        signupTab.style.fontWeight = 'normal';
-    } else {
-        loginForm.style.display = 'none';
-        signupForm.style.display = 'block';
-        loginTab.style.fontWeight = 'normal';
-        signupTab.style.fontWeight = 'bold';
-    }
-}
+//display registration message 
+// function showLoginForm() {
+//   document.getElementById('loginForm').style.display = 'block';
+// }
