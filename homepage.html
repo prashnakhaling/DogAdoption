@@ -222,10 +222,7 @@
                                         userSection.appendChild(viewMoreButton);
 
                                         // Scroll into view
-                                        userSection.scrollIntoView({
-                                            behavior: "smooth",
-                                            block: "center"
-                                        });
+                                        userSection.scrollIntoView({ behavior: "smooth", block: "center" });
                                     }
                                 }
 
@@ -257,6 +254,10 @@
                                         signupTab.style.fontWeight = 'bold';
                                     }
                                 }
+
+
+
+
                             </script>
                         </head>
 
@@ -285,42 +286,32 @@
                                         Up</button>
                                 </div>
 
-
-
                                 <!-- Login Form -->
-                                <form action="login.php" method="post">
-                                    <div id="loginForm">
-                                        <h2>Login</h2>
-                                        <input type="text" name="email" placeholder="Email"
-                                            style="width:100%; padding:0.5rem; margin-bottom:1rem;" required><br>
-
-                                        <input type="password" name="password" placeholder="Password"
-                                            style="width:100%; padding:0.5rem; margin-bottom:1rem;" required><br>
-
-                                        <button type="submit" style="padding:0.5rem 1rem;">Sign In</button>
-                                    </div>
-                                </form>
-
+                                <div id="loginForm">
+                                    <h2>Login</h2>
+                                    <input type="text" placeholder="Username"
+                                        style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
+                                    <input type="password" placeholder="Password"
+                                        style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
+                                    <button style="padding:0.5rem 1rem;">Sign In</button>
+                                </div>
 
                                 <!-- Sign Up Form -->
-                                <form action="signup.php" method="POST">
-                                    <div id="signupForm" style="display:none;">
-                                        <h2>Sign Up</h2>
-                                        <input type="text" name="username" placeholder="Username"
-                                            style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                                        <input type="email" name="email" placeholder="Email"
-                                            style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
-                                        <input type="password" name="password" placeholder="Password"
-                                            style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
+                                <div id="signupForm" style="display:none;">
+                                    <h2>Sign Up</h2>
+                                    <input type="text" placeholder="Username"
+                                        style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
+                                    <input type="email" placeholder="Email"
+                                        style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
+                                    <input type="password" placeholder="Password"
+                                        style="width:100%; padding:0.5rem; margin-bottom:1rem;"><br>
+                                    <button style="padding:0.5rem 1rem;">Register</button>
+                                </div>
 
-                                        <button style="padding:0.5rem 1rem;">Register</button>
-                                </form>
+                                <!-- Close Button -->
+                                <button onclick="hideLoginModal()"
+                                    style="background:red; color:white; padding:0.5rem; position:absolute; top:10px; right:10px;">X</button>
                             </div>
-
-                            <!-- Close Button -->
-                            <button onclick="hideLoginModal()"
-                                style="background:red; color:white; padding:0.5rem; position:absolute; top:10px; right:10px;">X</button>
-                        </div>
                         </div>
 
 

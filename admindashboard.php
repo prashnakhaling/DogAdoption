@@ -1,134 +1,165 @@
 <?php
-// dataconnection.php (inline for simplicity)
-$host = 'localhost';
-$dbname = 'dogadoption';
-$username = 'root';
-$password = '';
+// Connect to the database
+$mysqli = new mysqli("localhost", "root", "", "dogadoption");
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+// Check connection
+if ($mysqli->connect_error) {
+  die("Connection failed: " . $mysqli->connect_error);
 }
 
-// Add Dog
-if (isset($_POST['add_dog'])) {
-    $stmt = $pdo->prepare("INSERT INTO dogs (name, breed, age) VALUES (?, ?, ?)");
-    $stmt->execute([$_POST['name'], $_POST['breed'], $_POST['age']]);
-    $message = "Dog added successfully!";
-}
-
-// Delete Dog
-if (isset($_GET['delete_dog'])) {
-    $stmt = $pdo->prepare("DELETE FROM dogs WHERE id = ?");
-    $stmt->execute([$_GET['delete_dog']]);
-    $message = "Dog deleted successfully!";
-}
-
-// Edit Dog
-if (isset($_POST['edit_dog'])) {
-    $stmt = $pdo->prepare("UPDATE dogs SET name = ?, breed = ?, age = ? WHERE id = ?");
-    $stmt->execute([$_POST['name'], $_POST['breed'], $_POST['age'], $_POST['id']]);
-    $message = "Dog updated successfully!";
-}
-
-// Handle Adoption Request Action
-if (isset($_GET['update_request'])) {
-    $status = $_GET['status'];
-    $id = $_GET['update_request'];
-    $stmt = $pdo->prepare("UPDATE adoption_requests SET status = ? WHERE id = ?");
-    $stmt->execute([$status, $id]);
-    $message = "Request updated to '$status'";
-}
+// Fetch dog data
+$result = $mysqli->query("SELECT * FROM adoptions");
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Dog Adoption Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Tails Dog Adoption - Admin Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #2e3b4e;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      padding-top: 20px;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+    }
+
+    .sidebar a:hover {
+      background: #1e2a38;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
 </head>
-<body class="p-4">
-    <h1>🐾 Dog Adoption Admin Panel</h1>
 
-    <?php if (!empty($message)): ?>
-        <div class="alert alert-info"><?= $message ?></div>
-    <?php endif; ?>
+<body>
 
-    <!-- Tabs -->
-    <ul class="nav nav-tabs" id="adminTab" role="tablist">
-        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#add">➕ Add Dog</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#dogs">🐶 View/Edit Dogs</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#requests">📥 Adoption Requests</button></li>
-    </ul>
+  <div class="sidebar">
+    <h2>Dog Admin</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Dogs</a>
+    <a href="#">Applications</a>
+    <a href="#">Adoptions</a>
+    <a href="#">Settings</a>
+  </div>
 
-    <div class="tab-content mt-4">
-        <!-- Add Dog -->
-        <div class="tab-pane fade show active" id="add">
-            <form method="POST" class="w-50">
-                <input type="hidden" name="add_dog" value="1">
-                <input type="text" name="name" class="form-control mb-2" placeholder="Dog Name" required>
-                <input type="text" name="breed" class="form-control mb-2" placeholder="Breed" required>
-                <input type="number" name="age" class="form-control mb-2" placeholder="Age" required>
-                <button type="submit" class="btn btn-primary">Add Dog</button>
-            </form>
-        </div>
+  <div class="main">
+    <h1>Welcome, Admin</h1>
 
-        <!-- View/Edit/Delete Dogs -->
-        <div class="tab-pane fade" id="dogs">
-            <h4 class="mt-3">🐶 Dog List</h4>
-            <table class="table table-bordered">
-                <thead><tr><th>Name</th><th>Breed</th><th>Age</th><th>Actions</th></tr></thead>
-                <tbody>
-                    <?php
-                    $dogs = $pdo->query("SELECT * FROM dogs")->fetchAll();
-                    foreach ($dogs as $dog): ?>
-                        <tr>
-                            <form method="POST">
-                                <td><input name="name" value="<?= htmlspecialchars($dog['name']) ?>" class="form-control" required></td>
-                                <td><input name="breed" value="<?= htmlspecialchars($dog['breed']) ?>" class="form-control" required></td>
-                                <td><input name="age" type="number" value="<?= $dog['age'] ?>" class="form-control" required></td>
-                                <td>
-                                    <input type="hidden" name="id" value="<?= $dog['id'] ?>">
-                                    <button name="edit_dog" class="btn btn-sm btn-success">Update</button>
-                                    <a href="?delete_dog=<?= $dog['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this dog?')">Delete</a>
-                                </td>
-                            </form>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Adoption Requests -->
-        <div class="tab-pane fade" id="requests">
-            <h4 class="mt-3">📥 Adoption Requests</h4>
-            <table class="table table-striped">
-                <thead><tr><th>Dog ID</th><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody>
-                    <?php
-                    $requests = $pdo->query("SELECT * FROM adoption_requests")->fetchAll();
-                    foreach ($requests as $req): ?>
-                        <tr>
-                            <td><?= $req['dog_id'] ?></td>
-                            <td><?= htmlspecialchars($req['name']) ?></td>
-                            <td><?= htmlspecialchars($req['email']) ?></td>
-                            <td><?= $req['status'] ?></td>
-                            <td>
-                                <?php if ($req['status'] === 'Pending'): ?>
-                                    <a href="?update_request=<?= $req['id'] ?>&status=Approved" class="btn btn-sm btn-success">Approve</a>
-                                    <a href="?update_request=<?= $req['id'] ?>&status=Rejected" class="btn btn-sm btn-danger">Reject</a>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary">Handled</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+    <div class="cards">
+      <div class="card">
+        <h3>Total Dogs</h3>
+        <p><?php echo $result->num_rows; ?></p>
+      </div>
+      <div class="card">
+        <h3>Pending Applications</h3>
+        <p>12</p>
+      </div>
+      <div class="card">
+        <h3>Completed Adoptions</h3>
+        <p>89</p>
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <h2>Dog Listings</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Breed</th>
+          <th>Age</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php while ($row = $result->fetch_assoc()): ?>
+          <tr>
+            <td><?php echo htmlspecialchars($row['name']); ?></td>
+            <td><?php echo htmlspecialchars($row['breed']); ?></td>
+            <td><?php echo (int)$row['age']; ?></td>
+            <td><?php echo htmlspecialchars($row['status']); ?></td>
+          </tr>
+        <?php endwhile; ?>
+      </tbody>
+    </table>
+
+    <footer>
+      <p>Adopt love — it has four paws and a wagging tail.</p>
+      <p>You can't buy happiness, but you can adopt it.</p>
+      <p>Give a homeless dog a forever home.</p>
+      <p>They may have had a rough start, but you can give them a beautiful future.</p>
+      <p>Be the hero they’ve been waiting for — adopt, don’t shop.</p>
+      <p>Save a life — adopt your new best friend today.</p>
+    </footer>
+  </div>
+
 </body>
+
 </html>
