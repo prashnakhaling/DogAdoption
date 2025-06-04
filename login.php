@@ -1,44 +1,44 @@
 <?php
-// Include database connection
-include('dataconnection.php');
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Get and sanitize input
-    $username = trim($_POST["username"] ?? '');
-    $password = trim($_POST["password"] ?? '');
+$host = 'localhost';
+$dbname = 'dogadoption';
+$user = 'root';
+$pass = '';
 
-    $errors = [];
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("DB connection failed: " . $e->getMessage());
+}
 
-    // Validate fields
-    if (empty($username)) {
-        $errors[] = "Username is required.";
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username']);
+    $password = $_POST['password'];
 
-    if (empty($password)) {
-        $errors[] = "Password is required.";
-    }
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE name = ?");
+    $stmt->execute([$username]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // If no errors, check credentials
-    if (empty($errors)) {
-        // Check username
-        if ($username === $storedUsername) {
-            // Verify password hash
-            if (password_verify($password, $storedPasswordHash)) {
-                // Success - Set session or redirect
-                $_SESSION['username'] = $username;
-                echo "Login successful. Welcome, " . htmlspecialchars($username) . "!";
-                // Redirect to dashboard (uncomment this in real use)
-                header("Location:adoptdog.php");
-                exit;
-            } else {
-                $errors[] = "Invalid password.";
-            }
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+
+        if ($user['role'] === 'user') {
+            header("Location: adoptdog.php");
         } else {
-            $errors[] = "Username not found.";
+            header("Location: admindashboard.php");
         }
+        exit();
+    } else {
+        $_SESSION['login_attempted'] = true;
+        $_SESSION['login_error'] = "Invalid username or password.";
+        header("Location: homepage.php");
+        exit();
     }
 
-    // Show errors if any
+    // session_destroy();
+
 
 }

@@ -1,13 +1,22 @@
-
 <?php
 session_start();
 
-// Check if registration was successful
-if (isset($_SESSION['registration_success']) && $_SESSION['registration_success']) {
-    echo '<div class="success-message">Registration successful!<a href="#" id="loginLink">Login</a>
-</div>';
-    // Unset the session variable to prevent the message from displaying on subsequent page loads
-    unset($_SESSION['registration_success']);
+// // Check if registration was successful
+// if (isset($_SESSION['registration_success']) && $_SESSION['registration_success']) {
+//     echo '<div class="success-message">Registration successful!<a href="#" id="loginLink">Login</a>
+// </div>';
+//     // Unset the session variable to prevent the message from displaying on subsequent page loads
+//     unset($_SESSION['registration_success']);
+// }
+// Show success or error message
+if (isset($_SESSION['signup_success'])) {
+    echo "<p style='color: green;'>" . $_SESSION['signup_success'] . "</p>";
+    unset($_SESSION['signup_success']);
+}
+
+if (isset($_SESSION['signup_error'])) {
+    echo "<p style='color: red;'>" . $_SESSION['signup_error'] . "</p>";
+    unset($_SESSION['signup_error']);
 }
 ?>
 <!DOCTYPE html>
@@ -37,7 +46,7 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
         <nav>
             <a href="homepage.php">Home</a>
             <a href="availabledog.php">Available Dogs</a>
-            <a href="adoptdog.php">Adopt Dog</a>
+            <!-- <a href="adoptdog.php">Adopt Dog</a> -->
             <a href="#contact-section">Contact</a>
             <a href="#" id="loginLink">Login</a>
         </nav>
@@ -48,36 +57,48 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
                 <!-- Login Form -->
                 <div id="loginForm" style="display: none;">
                     <h2>Login</h2>
-                    <form id="loginFormElement"  action="login.php" method="POST">
-                        <label for="username">Username:</label><br>
-                        <input type="text" id="username" name="username"><br><br>
+                    <form id="loginLink" action="login.php" method="POST">
+                        <label>Username:</label><br>
+                        <input type="text" name="username" required><br><br>
 
-                        <label for="password">Password:</label><br>
-                        <input type="password" id="password" name="password"><br><br>
+                        <label>Password:</label><br>
+                        <input type="password" name="password" required><br><br>
+                        <?php if (!empty($_SESSION['signup_success'])): ?>
+                            <div style="color: green; font-weight: bold;">
+                                <?= $_SESSION['signup_success']; ?>
+                            </div>
+                            <?php unset($_SESSION['signup_success']); ?>
+                        <?php elseif (!empty($_SESSION['signup_error'])): ?>
+                            <div style="color: red; font-weight: bold;">
+                                <?= $_SESSION['signup_error']; ?>
+                            </div>
+                            <?php unset($_SESSION['signup_error']); ?>
+                        <?php endif; ?>
+
 
                         <button type="submit">Login</button>
                     </form>
+
                     <p>Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
                 </div>
 
-            <!-- Sign Up Form -->
-            <div id="signupForm" >
-                                <h2>Sign Up</h2>
-                <form action="signup.php" method="POST">
-                    <label for="name">Full Name:</label><br>
-                    <input type="text" id="name" name="name" required><br><br>
+                <!-- Sign Up Form -->
+                <div id="signupForm">
+                    <h2>Sign Up</h2>
+                    <form action="signup.php" method="POST">
+                        <label>Username:</label><br>
+                        <input type="text" name="username" required><br><br>
 
-                    <label for="phone">Phone Number:</label><br>
-                    <input type="tel" id="phone" name="phone" placeholder="1234567890" required><br><br>
+                        <label>Email:</label><br>
+                        <input type="email" name="email" required><br><br>
 
-                    <label for="email">Email Address:</label><br>
-                    <input type="email" id="email" name="email" required><br><br>
+                        <label>Password:</label><br>
+                        <input type="password" name="password" required><br><br>
 
-                        <label for="newPassword">Password:</label><br>
-                        <input type="password" id="newPassword" name="newPassword" required><br><br>
 
                         <button type="submit">Sign Up</button>
                     </form>
+
                     <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
 
                 </div>
@@ -123,42 +144,14 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
             </p>
         </div>
 
-    <section id="dogs-showcase" class="dogs-showcase">
-        <div class="dog-card">
-            <img src="buddy.jpg" alt="Dog 1" />
-            <h3>Buddy</h3>
-            <p>2-year-old Golden Retriever</p>
-        </div>
-        <div class="dog-card">
-            <img src="luna.jfif " alt="Dog 2" />
-            <h3>Luna</h3>
-            <p>3-year-old German Shepherd</p>
-        </div>
-        <div class="dog-card">
-            <img src="luna.jpg" alt="Dog 3" />
-            <h3>Luna</h3>
-            <p>3-year-old German Shepherd</p>
-        </div>
-        <div class="dog-card">
-            <img src="luna.jpg" alt="Dog 4" />
-            <h3>Luna</h3>
-            <p>3-year-old German Shepherd</p>
-        </div>
-        <section class="viewmore">
-            <button onclick="showhideUsers()" class="btn">View More</button>
-        </section>
-    </section>
-
-    <section id="userSection" class="users-section hide">
-        <section class="dogs-showcase">
-            <!-- Repeat dog cards or dynamically load -->
+        <section id="dogs-showcase" class="dogs-showcase">
             <div class="dog-card">
                 <img src="buddy.jpg" alt="Dog 1" />
                 <h3>Buddy</h3>
                 <p>2-year-old Golden Retriever</p>
             </div>
             <div class="dog-card">
-                <img src="luna.jpg" alt="Dog 2" />
+                <img src="luna.jfif " alt="Dog 2" />
                 <h3>Luna</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
@@ -172,32 +165,60 @@ if (isset($_SESSION['registration_success']) && $_SESSION['registration_success'
                 <h3>Luna</h3>
                 <p>3-year-old German Shepherd</p>
             </div>
-            <div class="dog-card">
-                <img src="luna.jpg" alt="Dog 2" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="luna.jpg" alt="Dog 3" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="luna.jpg" alt="Dog 4" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <!-- Add more dog-cards as needed -->
+            <section class="viewmore">
+                <button onclick="showhideUsers()" class="btn">View More</button>
+            </section>
         </section>
-    </section>
-    <footer class="simple-footer">
-        <div class="footer-content" id="contact-section">
-            <div class="footer-content">
-                <p>&copy; 2025 Happy Tails Dog Adoption</p>
-                <p>Email: info@dogadoption.org | Phone: (123) 456-7890</p>
+
+        <section id="userSection" class="users-section hide">
+            <section class="dogs-showcase">
+                <!-- Repeat dog cards or dynamically load -->
+                <div class="dog-card">
+                    <img src="buddy.jpg" alt="Dog 1" />
+                    <h3>Buddy</h3>
+                    <p>2-year-old Golden Retriever</p>
+                </div>
+                <div class="dog-card">
+                    <img src="luna.jpg" alt="Dog 2" />
+                    <h3>Luna</h3>
+                    <p>3-year-old German Shepherd</p>
+                </div>
+                <div class="dog-card">
+                    <img src="luna.jpg" alt="Dog 3" />
+                    <h3>Luna</h3>
+                    <p>3-year-old German Shepherd</p>
+                </div>
+                <div class="dog-card">
+                    <img src="luna.jpg" alt="Dog 4" />
+                    <h3>Luna</h3>
+                    <p>3-year-old German Shepherd</p>
+                </div>
+                <div class="dog-card">
+                    <img src="luna.jpg" alt="Dog 2" />
+                    <h3>Luna</h3>
+                    <p>3-year-old German Shepherd</p>
+                </div>
+                <div class="dog-card">
+                    <img src="luna.jpg" alt="Dog 3" />
+                    <h3>Luna</h3>
+                    <p>3-year-old German Shepherd</p>
+                </div>
+                <div class="dog-card">
+                    <img src="luna.jpg" alt="Dog 4" />
+                    <h3>Luna</h3>
+                    <p>3-year-old German Shepherd</p>
+                </div>
+                <!-- Add more dog-cards as needed -->
+            </section>
+        </section>
+        <footer class="simple-footer">
+            <div class="footer-content" id="contact-section">
+                <div class="footer-content">
+                    <p>&copy; 2025 Happy Tails Dog Adoption</p>
+                    <p>Email: info@dogadoption.org | Phone: (123) 456-7890</p>
+                </div>
             </div>
-        </div>
-    </footer>
+        </footer>
 
 </body>
 

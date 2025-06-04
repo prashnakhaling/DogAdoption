@@ -1,71 +1,47 @@
 <?php
-// Include database connection
-include('dataconnection.php');
-session_start();
+$host = 'localhost';
+$dbname = 'dogadoption';
+$user = 'root';
+$pass = '';
 
-// Initialize error messages
-$errors = [
-    'username' => '',
-    'email' => '',
-    'password' => '',
-];
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("DB connection failed: " . $e->getMessage());
+}
 
-// Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and validate username
-    $username = filter_var(trim($_POST['newUsername'] ?? ''));
-    //  FILTER_SANITIZE_STRING);
-    if (empty($username)) {
-        $errors['username'] = 'Username is required.';
-    } elseif (!preg_match("/^[a-zA-Z0-9_]{3,20}$/", $username)) {
-        $errors['username'] = 'Username must be 3-20 characters long and contain only letters, numbers, and underscores.';
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    // $role = 'user';  // Force 'user' role for all signups
+
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die("Invalid email format.");
     }
 
-    // Sanitize and validate email
-    $email = filter_var(trim($_POST['newEmail'] ?? ''), FILTER_SANITIZE_EMAIL);
-    if (empty($email)) {
-        $errors['email'] = 'Email is required.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Invalid email format.';
+    // Check if username or email already exists
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE name = ? OR email = ?");
+    $stmt->execute([$username, $email]);
+
+    if ($stmt->rowCount() > 0) {
+        die("Username or email already exists.");
+        header("Location: homepage.php");
+        exit();
     }
 
-    // Validate password
-    $password = $_POST['newPassword'] ?? '';
-    if (empty($password)) {
-        $errors['password'] = 'Password is required.';
-    } elseif (strlen($password) < 8) {
-        $errors['password'] = 'Password must be at least 8 characters long.';
+    // Hash password
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert user
+    $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+    if ($stmt->execute([$username, $email, $hashedPassword])) {
+        $_SESSION['signup_success'] = "Signup successful! You can now login.";
+    } else {
+        $_SESSION['signup_error'] = "Signup failed. Please try again.";
     }
-
-    // Check if there are no errors
-    if (!array_filter($errors)) {
-        // Hash the password securely
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Prepare an SQL statement with placeholders
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-
-        // Bind parameters (s for string, i for integer, etc.)
-        $stmt->bind_param("sss", $username, $email, $hashedPassword);
-
-        // Execute the statement
-        if ($stmt->execute()) {
-            // Set session variable to indicate successful registration
-            $_SESSION['registration_success'] = true;
-            // Redirect to the homepage
-            header('Location:homepage.php');
-            exit;
-        } else {
-            // Handle insertion failure
-            echo "Error: " . $stmt->error;
-        }
-        // Close statement and connection
-        $stmt->close();
-        $conn->close();
-    }
+    header("Location: homepage.php");
+    exit();
 }
