@@ -96,15 +96,116 @@ $result = $mysqli->query("SELECT * FROM adoptions");
       font-size: 14px;
       color: #666;
     }
+
+    /* Modal background */
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Modal content box */
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    /* Close button */
+    .closeBtn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .closeBtn:hover {
+      color: #000;
+    }
+
+    /* Inputs */
+    input[type="text"],
+    input[type="number"],
+    input[type="file"] {
+      width: 80%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    /* Submit button */
+    button[type="submit"] {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #218838;
+    }
+
+    /* Dogs button */
+    #dogsBtn {
+      padding: 10px 20px;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
+
+
 <body>
+
+  <div id="dogModal" class="modal">
+    <div class="modal-content">
+      <span class="closeBtn">&times;</span>
+      <h2>Enter Dog Info</h2>
+      <form id="dogInfoForm" action="doginsert.php" method="POST" enctype="multipart/form-data">
+
+        <label>
+          Breed:
+          <input type="text" name="breed" placeholder="e.g. Labrador" required>
+        </label>
+        <label>
+          Age:
+          <input type="number" name="age" placeholder="e.g. 3" required>
+        </label>
+        <label>
+          Image:
+          <input type="file" name="image" accept="image/*" required>
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
 
   <div class="sidebar">
     <h2>Dog Admin</h2>
     <a href="#">Dashboard</a>
-    <a href="#">Dogs</a>
+    <a href="#" id="dogsBtn">Dogs</a>
     <a href="#">Applications</a>
     <a href="#">Adoptions</a>
     <a href="#">Settings</a>
@@ -127,28 +228,64 @@ $result = $mysqli->query("SELECT * FROM adoptions");
         <p>89</p>
       </div>
     </div>
+    <?php
+    // Database connection parameters
+    $host = 'localhost';
+    $db = 'dogadoption';  // Your DB name
+    $user = 'root';       // Change if needed
+    $pass = '';           // Change if needed
 
+    // Create connection
+    $conn = new mysqli($host, $user, $pass, $db);
+
+    if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+    }
+
+    $result = $conn->query("SELECT dog_breed, age, dog_image, added_date FROM dogs ORDER BY added_date DESC");
+
+    if ($result === false) {
+      die("Query failed: " . $conn->error);
+    }
+    ?>
     <h2>Dog Listings</h2>
-    <table>
+    <table cellpadding="8" cellspacing="0">
       <thead>
         <tr>
-          <th>Name</th>
           <th>Breed</th>
+          <th>Image</th>
           <th>Age</th>
-          <th>Status</th>
+          <th>Added Date</th>
         </tr>
       </thead>
       <tbody>
-        <?php while ($row = $result->fetch_assoc()): ?>
+        <?php while ($row = $result->fetch_assoc()) : ?>
           <tr>
-            <td><?php echo htmlspecialchars($row['name']); ?></td>
-            <td><?php echo htmlspecialchars($row['breed']); ?></td>
+            <td><?php echo htmlspecialchars($row['dog_breed']); ?></td>
+            <td>
+              <?php
+              $imageName = trim($row['dog_image']);
+              $imagePath = '/dogpic/' . htmlspecialchars($imageName);
+              $serverImagePath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+
+              if (!file_exists($serverImagePath) || empty($imageName)) {
+                // Show placeholder if image missing
+                $imagePath = '/dogpic/placeholder.png';
+              }
+              ?>
+              <img src="<?php echo $imagePath; ?>" alt="<?php echo htmlspecialchars($row['dog_breed']); ?>" style="width: 50px; height: 50px; object-fit: cover;">
+            </td>
             <td><?php echo (int)$row['age']; ?></td>
-            <td><?php echo htmlspecialchars($row['status']); ?></td>
+            <td><?php echo htmlspecialchars($row['added_date']); ?></td>
           </tr>
         <?php endwhile; ?>
       </tbody>
     </table>
+
+    <?php
+    $result->free();
+    $conn->close();
+    ?>
 
     <footer>
       <p>Adopt love — it has four paws and a wagging tail.</p>
@@ -161,5 +298,27 @@ $result = $mysqli->query("SELECT * FROM adoptions");
   </div>
 
 </body>
+
+<script>
+  const dogsBtn = document.getElementById('dogsBtn');
+  const modal = document.getElementById('dogModal');
+  const closeBtn = document.querySelector('.closeBtn');
+
+  dogsBtn.addEventListener('click', () => {
+    modal.style.display = 'block';
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  // Optional: Close modal when clicking outside content
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+</script>
+
 
 </html>
