@@ -1,14 +1,20 @@
 <?php
-// Connect to the database
-$mysqli = new mysqli("localhost", "root", "", "dogadoption");
+// Connection
+include 'dataconnection.php';
 
-// Check connection
-if ($mysqli->connect_error) {
-  die("Connection failed: " . $mysqli->connect_error);
+// Function to return image path (assuming full path is already stored in DB)
+function getValidImagePath($imagePath)
+{
+  $imagePath = trim($imagePath);
+  return (!empty($imagePath) && file_exists(__DIR__ . '/' . $imagePath)) ? $imagePath : 'placeholder.jpg';
 }
 
-// Fetch dog data
-$result = $mysqli->query("SELECT * FROM adoptions");
+// Total dog count
+$totalDogsResult = $conn->query("SELECT COUNT(*) AS total FROM dogs");
+$totalDogs = ($totalDogsResult && $row = $totalDogsResult->fetch_assoc()) ? (int)$row['total'] : 0;
+
+// Get dog data
+$dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date FROM dogs ORDER BY added_date DESC");
 ?>
 
 <!DOCTYPE html>
@@ -16,12 +22,11 @@ $result = $mysqli->query("SELECT * FROM adoptions");
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Happy Tails Dog Adoption - Admin Dashboard</title>
+  <title>Happy Tails - Admin Dashboard</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       background-color: #f9f9f9;
     }
 
@@ -36,7 +41,6 @@ $result = $mysqli->query("SELECT * FROM adoptions");
 
     .sidebar h2 {
       text-align: center;
-      margin-bottom: 30px;
     }
 
     .sidebar a {
@@ -97,21 +101,24 @@ $result = $mysqli->query("SELECT * FROM adoptions");
       color: #666;
     }
 
-    /* Modal background */
+    img {
+      border-radius: 6px;
+      object-fit: cover;
+      width: 60px;
+      height: 60px;
+    }
+
     .modal {
       display: none;
-      /* Hidden by default */
       position: fixed;
       z-index: 1000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
       background-color: rgba(0, 0, 0, 0.5);
     }
 
-    /* Modal content box */
     .modal-content {
       background-color: #fff;
       margin: 10% auto;
@@ -119,29 +126,20 @@ $result = $mysqli->query("SELECT * FROM adoptions");
       border-radius: 8px;
       width: 100%;
       max-width: 400px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       position: relative;
     }
 
-    /* Close button */
     .closeBtn {
       position: absolute;
       top: 10px;
       right: 15px;
       font-size: 24px;
       cursor: pointer;
-      color: #888;
     }
 
-    .closeBtn:hover {
-      color: #000;
-    }
-
-    /* Inputs */
-    input[type="text"],
-    input[type="number"],
-    input[type="file"] {
-      width: 80%;
+    input,
+    button {
+      width: 90%;
       padding: 10px;
       margin-top: 5px;
       margin-bottom: 15px;
@@ -149,75 +147,65 @@ $result = $mysqli->query("SELECT * FROM adoptions");
       border: 1px solid #ccc;
     }
 
-    /* Submit button */
-    button[type="submit"] {
-      background-color: #28a745;
+    button[type="submit"],
+    #addDogBtn {
+      background-color: rgb(3, 19, 109);
       color: white;
-      padding: 10px 15px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
-    button[type="submit"]:hover {
-      background-color: #218838;
-    }
+    button:hover,
+    #addDogBtn:hover background-color: :rgb(3, 19, 109);
 
-    /* Dogs button */
-    #dogsBtn {
-      padding: 10px 20px;
-      background-color: #2d89ef;
+    .delete-btn {
+      background-color: red;
       color: white;
       border: none;
-      border-radius: 5px;
+      padding: 6px 12px;
+      border-radius: 4px;
       cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: darkred;
     }
   </style>
 </head>
 
-
-
 <body>
 
+  <!-- Modal Form -->
   <div id="dogModal" class="modal">
     <div class="modal-content">
       <span class="closeBtn">&times;</span>
-      <h2>Enter Dog Info</h2>
-      <form id="dogInfoForm" action="doginsert.php" method="POST" enctype="multipart/form-data">
-
-        <label>
-          Breed:
-          <input type="text" name="breed" placeholder="e.g. Labrador" required>
-        </label>
-        <label>
-          Age:
-          <input type="number" name="age" placeholder="e.g. 3" required>
-        </label>
-        <label>
-          Image:
-          <input type="file" name="image" accept="image/*" required>
-        </label>
+      <h2>Add New Dog</h2>
+      <form action="doginsert.php" method="POST" enctype="multipart/form-data">
+        <label>Breed:<br><input type="text" name="breed" required></label><br>
+        <label>Age:<br><input type="number" name="age" required></label><br>
+        <label>Image:<br><input type="file" name="image" accept="image/*" required></label><br>
         <button type="submit">Submit</button>
       </form>
     </div>
   </div>
 
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>Dog Admin</h2>
     <a href="#">Dashboard</a>
-    <a href="#" id="dogsBtn">Dogs</a>
-    <a href="#">Applications</a>
-    <a href="#">Adoptions</a>
+    <a href="#" id="addDogBtn">Add Dog</a>
+    <a href="#" id="pendingAppBtn">Applications</a>
     <a href="#">Settings</a>
   </div>
 
+  <!-- Main Content -->
   <div class="main">
     <h1>Welcome, Admin</h1>
-
     <div class="cards">
       <div class="card">
         <h3>Total Dogs</h3>
-        <p><?php echo $result->num_rows; ?></p>
+        <p><?= $totalDogs ?></p>
       </div>
       <div class="card">
         <h3>Pending Applications</h3>
@@ -228,97 +216,97 @@ $result = $mysqli->query("SELECT * FROM adoptions");
         <p>89</p>
       </div>
     </div>
-    <?php
-    // Database connection parameters
-    $host = 'localhost';
-    $db = 'dogadoption';  // Your DB name
-    $user = 'root';       // Change if needed
-    $pass = '';           // Change if needed
 
-    // Create connection
-    $conn = new mysqli($host, $user, $pass, $db);
-
-    if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-    }
-
-    $result = $conn->query("SELECT dog_breed, age, dog_image, added_date FROM dogs ORDER BY added_date DESC");
-
-    if ($result === false) {
-      die("Query failed: " . $conn->error);
-    }
-    ?>
     <h2>Dog Listings</h2>
-    <table cellpadding="8" cellspacing="0">
+    <table>
       <thead>
         <tr>
           <th>Breed</th>
           <th>Image</th>
           <th>Age</th>
           <th>Added Date</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <?php while ($row = $result->fetch_assoc()) : ?>
+        <?php while ($row = $dogsResult->fetch_assoc()):
+          $imagePath = getValidImagePath($row['dog_image']); ?>
           <tr>
-            <td><?php echo htmlspecialchars($row['dog_breed']); ?></td>
+            <td><?= htmlspecialchars($row['dog_breed']) ?></td>
+            <td><img src="<?= htmlspecialchars($imagePath) ?>" alt="Dog Image"></td>
+            <td><?= (int)$row['age'] ?></td>
+            <td><?= htmlspecialchars($row['added_date']) ?></td>
             <td>
-              <?php
-              $imageName = trim($row['dog_image']);
-              $imagePath = '/dogpic/' . htmlspecialchars($imageName);
-              $serverImagePath = $_SERVER['DOCUMENT_ROOT'] . $imagePath;
+              <form method="POST" action="deletedog.php" onsubmit="return confirm('Are you sure you want to delete this dog?');">
+                <input type="hidden" name="dog_id" value="<?= (int)$row['dog_id'] ?>">
 
-              if (!file_exists($serverImagePath) || empty($imageName)) {
-                // Show placeholder if image missing
-                $imagePath = '/dogpic/placeholder.png';
-              }
-              ?>
-              <img src="<?php echo $imagePath; ?>" alt="<?php echo htmlspecialchars($row['dog_breed']); ?>" style="width: 50px; height: 50px; object-fit: cover;">
+                <button type="submit" style="background-color: red;" class="delete-btn">Delete</button>
+              </form>
             </td>
-            <td><?php echo (int)$row['age']; ?></td>
-            <td><?php echo htmlspecialchars($row['added_date']); ?></td>
           </tr>
         <?php endwhile; ?>
       </tbody>
     </table>
 
-    <?php
-    $result->free();
-    $conn->close();
-    ?>
-
     <footer>
-      <p>Adopt love — it has four paws and a wagging tail.</p>
-      <p>You can't buy happiness, but you can adopt it.</p>
-      <p>Give a homeless dog a forever home.</p>
-      <p>They may have had a rough start, but you can give them a beautiful future.</p>
-      <p>Be the hero they’ve been waiting for — adopt, don’t shop.</p>
-      <p>Save a life — adopt your new best friend today.</p>
+      <p>Adopt love — it has four paws and a wagging tail.<br>
+        You can't buy happiness, but you can adopt it.<br>
+        Give a homeless dog a forever home.</p>
     </footer>
   </div>
 
+  <script>
+    document.getElementById('addDogBtn').onclick = () => document.getElementById('dogModal').style.display = 'block';
+    document.querySelector('.closeBtn').onclick = () => document.getElementById('dogModal').style.display = 'none';
+    window.onclick = e => {
+      if (e.target === document.getElementById('dogModal')) {
+        document.getElementById('dogModal').style.display = 'none';
+      }
+    };
+
+    // Open Add Dog Modal
+    document.getElementById('addDogBtn').onclick = () => {
+      document.getElementById('dogModal').style.display = 'block';
+    };
+
+    // Close buttons
+    document.querySelectorAll('.closeBtn').forEach(btn => {
+      btn.onclick = () => {
+        const modalId = btn.getAttribute('data-modal') || 'dogModal';
+        document.getElementById(modalId).style.display = 'none';
+      };
+    });
+
+    // Open Applications Modal
+    document.getElementById('pendingAppBtn').onclick = () => {
+      document.getElementById('applicationsModal').style.display = 'block';
+    };
+
+
+
+    // Close modal when clicking outside
+    window.onclick = function(e) {
+      document.querySelectorAll('.modal').forEach(modal => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+    };
+  </script>
+
 </body>
+<!-- Applications Modal -->
+<div id="applicationsModal" class="modal">
+  <div class="modal-content">
+    <span class="closeBtn" data-modal="applicationsModal">&times;</span>
+    <h2>Applications</h2>
+    <p>List of adoption applications goes here...</p>
+  </div>
+</div>
 
-<script>
-  const dogsBtn = document.getElementById('dogsBtn');
-  const modal = document.getElementById('dogModal');
-  const closeBtn = document.querySelector('.closeBtn');
-
-  dogsBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
-  });
-
-  closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-
-  // Optional: Close modal when clicking outside content
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-    }
-  });
-</script>
 
 
 </html>
+
+<?php
+$dogsResult->free();
+$conn->close();
+?>

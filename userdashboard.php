@@ -200,82 +200,82 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
 
+        <?php
+        $mysqli = new mysqli("localhost", "root", "", "dogadoption");
+        $dogs = [];
 
-        <?php if (!empty($message)): ?>
-            <div class="success-message"><?php echo $message; ?></div>
-        <?php endif; ?>
-
+        if (!$mysqli->connect_error) {
+            $result = $mysqli->query("SELECT dog_breed AS name, dog_image FROM dogs ORDER BY added_date DESC");
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $dogs[] = $row;
+                }
+            }
+            $mysqli->close();
+        }
+        ?>
         <div class="dog-grid">
-            <?php
-            $dogs = [
-                ["name" => "Buddy", "id" => 1],
-                ["name" => "Luna", "id" => 2],
-                ["name" => "Max", "id" => 3],
-                ["name" => "Bella", "id" => 4],
-                ["name" => "Charlie", "id" => 5]
-            ];
-
-            foreach ($dogs as $dog): ?>
+            <?php foreach ($dogs as $dog): ?>
                 <div class="dog-card">
-                    <img src="https://placedog.net/400/300?id=<?php echo $dog['id']; ?>" alt="Dog <?php echo $dog['name']; ?>">
-                    <h2><?php echo $dog['name']; ?></h2>
-                    <button class="adopt-button" data-dogname="<?php echo $dog['name']; ?>">Adopt</button>
+                    <img src="<?php echo htmlspecialchars($dog['dog_image']); ?>" alt="Dog <?php echo htmlspecialchars($dog['name']); ?>">
+                    <h2><?php echo htmlspecialchars($dog['name']); ?></h2>
+                    <button class="adopt-button" data-dogname="<?php echo htmlspecialchars($dog['name']); ?>">Adopt</button>
                 </div>
             <?php endforeach; ?>
         </div>
-    </div>
 
-    <!-- Adoption Form Section -->
-    <div class="form-section" id="formSection">
-        <button class="close-btn" onclick="document.getElementById('formSection').style.display='none'">✖</button>
-        <h2>Adoption Form</h2>
-        <form id="adoptionForm" method="post" action="">
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullname" required>
 
-            <label for="email">Email Address:</label>
-            <input type="email" id="email" name="email" required>
+        <!-- Adoption Form Section -->
+        <div class="form-section" id="formSection">
+            <button class="close-btn" onclick="document.getElementById('formSection').style.display='none'">✖</button>
+            <h2>Adoption Form</h2>
+            <form id="adoptionForm" method="post" action="">
+                <label for="fullname">Full Name:</label>
+                <input type="text" id="fullname" name="fullname" required>
 
-            <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" required>
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
 
-            <label for="address">Home Address:</label>
-            <textarea id="address" name="address" rows="3" required></textarea>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
 
-            <label for="dogname">Name of Dog to Adopt:</label>
-            <input type="text" id="dogname" name="dogname" readonly required>
+                <label for="address">Home Address:</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
 
-            <button type="submit">Submit Application</button>
-        </form>
-    </div>
+                <label for="dogname">Name of Dog to Adopt:</label>
+                <input type="text" id="dogname" name="dogname" readonly required>
 
-    <script>
-        const adoptButtons = document.querySelectorAll('.adopt-button');
-        const formSection = document.getElementById('formSection');
-        const dogNameInput = document.getElementById('dogname');
+                <button type="submit">Submit Application</button>
+            </form>
+        </div>
 
-        adoptButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const dogName = button.getAttribute('data-dogname');
-                dogNameInput.value = dogName;
-                formSection.style.display = 'block';
-                formSection.scrollIntoView({
-                    behavior: 'smooth'
+        <script>
+            const adoptButtons = document.querySelectorAll('.adopt-button');
+            const formSection = document.getElementById('formSection');
+            const dogNameInput = document.getElementById('dogname');
+
+            adoptButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const dogName = button.getAttribute('data-dogname');
+                    dogNameInput.value = dogName;
+                    formSection.style.display = 'block';
+                    formSection.scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 });
             });
-        });
-    </script>
+        </script>
 
-    <footer>
-        <p>
-            "Adopt love — it has four paws and a wagging tail." <br>
-            "You can't buy happiness, but you can adopt it." <br>
-            "Give a homeless dog a forever home — change their life and yours." <br>
-            "Rescue dogs aren’t broken, they’ve just experienced more life." <br>
-            "Adoption is not just about saving a life, it's about gaining a loyal friend." <br>
-            "They may have had a rough start, but you can give them a beautiful future."
-        </p>
-    </footer>
+        <footer>
+            <p>
+                "Adopt love — it has four paws and a wagging tail." <br>
+                "You can't buy happiness, but you can adopt it." <br>
+                "Give a homeless dog a forever home — change their life and yours." <br>
+                "Rescue dogs aren’t broken, they’ve just experienced more life." <br>
+                "Adoption is not just about saving a life, it's about gaining a loyal friend." <br>
+                "They may have had a rough start, but you can give them a beautiful future."
+            </p>
+        </footer>
 
 </body>
 
