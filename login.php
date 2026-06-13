@@ -31,13 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
+    if (!empty($user) && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['name'];
         $_SESSION['login_success'] = "Welcome, " . htmlspecialchars($user['name']) . "!";
         header("Location: userdashboard.php");
         exit();
-    }
+    };
 
     // Try logging in as an admin (plain-text password match)
     $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = ?");

@@ -32,3 +32,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dog_id'])) {
     echo "Invalid request.";
 }
 ?>
+

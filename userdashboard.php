@@ -1,6 +1,6 @@
 <?php
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// Handle form submission for adoption
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['fullname'])) {
     $mysqli = new mysqli("localhost", "root", "", "dogadoption");
 
     if ($mysqli->connect_error) {
@@ -17,23 +17,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               VALUES ('$fullname', '$email', '$phone', '$address', '$dogname')";
 
     if ($mysqli->query($query)) {
-        $message = "Application submitted successfully!";
+        echo "<script>alert('Application submitted successfully!');</script>";
     } else {
-        $message = "Error: " . $mysqli->error;
+        echo "<script>alert('Error submitting application. Please try again.');</script>";
     }
 
     $mysqli->close();
 }
-?>
 
+// Fetch dogs (with search filter)
+$mysqli = new mysqli("localhost", "root", "", "dogadoption");
+$dogs = [];
+$searchTerm = "";
+
+if (!$mysqli->connect_error) {
+    if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
+        $searchTerm = $mysqli->real_escape_string(trim($_GET['search']));
+        $result = $mysqli->query("SELECT dog_breed AS name, dog_image 
+                                  FROM dogs 
+                                  WHERE dog_breed LIKE '%$searchTerm%' 
+                                  ORDER BY added_date DESC");
+    } else {
+        $result = $mysqli->query("SELECT dog_breed AS name, dog_image FROM dogs ORDER BY added_date DESC");
+    }
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $dogs[] = $row;
+        }
+    }
+    $mysqli->close();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happy Tails Dog Adoption</title>
+    <meta charset="UTF-8">
+    <title>Dog Adoption Search</title>
+
     <style>
+        /* your existing styles remain unchanged */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .search-bar input {
+            padding: 8px;
+            font-size: 16px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar button {
+            padding: 8px 16px;
+            background-color: #adb2d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f8f8f8;
@@ -42,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .dashboard {
-            max-width: 1200px;
+            max-width: 2000px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -172,13 +220,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <div class="dashboard">
-
         <h1>Welcome to the Dog Adoption Center 🐶</h1>
+
+        <!-- Search Form -->
+        <div class="search-bar">
+            <form method="get" action="">
+                <input type="text" name="search" placeholder="Search by breed..." value="<?php echo htmlspecialchars($searchTerm); ?>">
+                <button type="submit">Search</button>
+            </form>
+        </div>
         <style>
             button {
                 padding: 8px 16px;
                 background-color: #adb2d4;
                 /* Red color */
+
                 color: white;
                 border: none;
                 border-radius: 4px;
@@ -198,85 +254,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit">Logout</button>
             </form>
         </div>
+        <div class="container">
+            <a href="user_chatsupport.php">
+                <button type="button">💬 Chat with Admin</button>
+            </a>
+        </div>
 
-
-        <?php
-        $mysqli = new mysqli("localhost", "root", "", "dogadoption");
-        $dogs = [];
-
-        if (!$mysqli->connect_error) {
-            $result = $mysqli->query("SELECT dog_breed AS name, dog_image FROM dogs ORDER BY added_date DESC");
-            if ($result) {
-                while ($row = $result->fetch_assoc()) {
-                    $dogs[] = $row;
-                }
-            }
-            $mysqli->close();
-        }
-        ?>
+        <!-- Dog Cards -->
         <div class="dog-grid">
-            <?php foreach ($dogs as $dog): ?>
-                <div class="dog-card">
-                    <img src="<?php echo htmlspecialchars($dog['dog_image']); ?>" alt="Dog <?php echo htmlspecialchars($dog['name']); ?>">
-                    <h2><?php echo htmlspecialchars($dog['name']); ?></h2>
-                    <button class="adopt-button" data-dogname="<?php echo htmlspecialchars($dog['name']); ?>">Adopt</button>
-                </div>
-            <?php endforeach; ?>
+            <?php if (empty($dogs)): ?>
+                <p style="text-align:center;">No dogs found matching your search.</p>
+            <?php else: ?>
+                <?php foreach ($dogs as $dog): ?>
+                    <div class="dog-card">
+                        <img src="<?php echo htmlspecialchars($dog['dog_image']); ?>" alt="Dog <?php echo htmlspecialchars($dog['name']); ?>">
+                        <h2><?php echo htmlspecialchars($dog['name']); ?></h2>
+                        <button class="adopt-button" data-dogname="<?php echo htmlspecialchars($dog['name']); ?>">Adopt</button>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
+    </div>
+
+    <!-- Adoption Form -->
+    <div class="form-section" id="formSection" style="display:none;">
+        <button class="close-btn" onclick="document.getElementById('formSection').style.display='none'">✖</button>
+        <h2>Adoption Form</h2>
+        <form id="adoptionForm" method="post" action="">
+            <label for="fullname">Full Name:</label>
+            <input type="text" id="fullname" name="fullname" required>
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <label for="address">Home Address:</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
+            <label for="dogname">Name of Dog to Adopt:</label>
+            <input type="text" id="dogname" name="dogname" readonly required>
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
 
 
-        <!-- Adoption Form Section -->
-        <div class="form-section" id="formSection">
-            <button class="close-btn" onclick="document.getElementById('formSection').style.display='none'">✖</button>
-            <h2>Adoption Form</h2>
-            <form id="adoptionForm" method="post" action="">
-                <label for="fullname">Full Name:</label>
-                <input type="text" id="fullname" name="fullname" required>
+    <script>
+        const adoptButtons = document.querySelectorAll('.adopt-button');
+        const formSection = document.getElementById('formSection');
+        const dogNameInput = document.getElementById('dogname');
 
-                <label for="email">Email Address:</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" required>
-
-                <label for="address">Home Address:</label>
-                <textarea id="address" name="address" rows="3" required></textarea>
-
-                <label for="dogname">Name of Dog to Adopt:</label>
-                <input type="text" id="dogname" name="dogname" readonly required>
-
-                <button type="submit">Submit Application</button>
-            </form>
-        </div>
-
-        <script>
-            const adoptButtons = document.querySelectorAll('.adopt-button');
-            const formSection = document.getElementById('formSection');
-            const dogNameInput = document.getElementById('dogname');
-
-            adoptButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const dogName = button.getAttribute('data-dogname');
-                    dogNameInput.value = dogName;
-                    formSection.style.display = 'block';
-                    formSection.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+        adoptButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const dogName = button.getAttribute('data-dogname');
+                dogNameInput.value = dogName;
+                formSection.style.display = 'block';
+                formSection.scrollIntoView({
+                    behavior: 'smooth'
                 });
             });
-        </script>
-
-        <footer>
-            <p>
-                "Adopt love — it has four paws and a wagging tail." <br>
-                "You can't buy happiness, but you can adopt it." <br>
-                "Give a homeless dog a forever home — change their life and yours." <br>
-                "Rescue dogs aren’t broken, they’ve just experienced more life." <br>
-                "Adoption is not just about saving a life, it's about gaining a loyal friend." <br>
-                "They may have had a rough start, but you can give them a beautiful future."
-            </p>
-        </footer>
-
+        });
+    </script>
+    <footer>
+        <p>
+            "Adopt love — it has four paws and a wagging tail." <br>
+            "You can't buy happiness, but you can adopt it." <br>
+            "Give a homeless dog a forever home — change their life and yours." <br>
+            "Rescue dogs aren’t broken, they’ve just experienced more life." <br>
+            "Adoption is not just about saving a life, it's about gaining a loyal friend." <br>
+            "They may have had a rough start, but you can give them a beautiful future."
+        </p>
+    </footer>
 </body>
 
 </html>

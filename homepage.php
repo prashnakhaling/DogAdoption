@@ -206,6 +206,7 @@
         }
 
         .animated-text.visible {
+
             /* Animation styles */
             opacity: 0;
             transform: translateY(20px);
@@ -253,6 +254,7 @@
         }
 
         .btn:active {
+
             transform: scale(0.98);
             background-color: #3e8e41;
         }
@@ -351,6 +353,12 @@
                 loginTab.style.fontWeight = 'normal';
                 signupTab.style.fontWeight = 'bold';
             }
+        }
+
+        // Show alert if "error=1" is in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === '1') {
+            alert("Login failed! Email or password is incorrect.");
         }
     </script>
 </head>
@@ -507,64 +515,79 @@
         </div>
         <div class="dog-card">
             <img src="images/dd1.jfif " alt="Dog 2" />
-            <h3>Luna</h3>
+            <h3>Buddy</h3>
             <p>3-year-old German Shepherd</p>
         </div>
         <div class="dog-card">
-            <img src="images/dd2.jfif" alt="Dog 3" />
+            <img src="images/dd4.jfif" alt="Dog 3" />
             <h3>Luna</h3>
             <p>3-year-old German Shepherd</p>
         </div>
         <div class="dog-card">
             <img src="images/dd3.jfif" alt="Dog 4" />
+            <h3>Golden Retriever</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+
+
+
+
+        <!-- Repeat dog cards or dynamically load -->
+        <div class="dog-card">
+            <img src="images/labr.jfif" alt="Dog 1" />
+            <h3>labrador Retriever</h3>
+            <p>2-year-old Golden Retriever</p>
+        </div>
+        <div class="dog-card">
+            <img src="images/luna4.jfif" alt="Dog 2" />
             <h3>Luna</h3>
             <p>3-year-old German Shepherd</p>
         </div>
-        <section class="viewmore">
-            <button onclick="showhideUsers()" class="btn">View More</button>
-        </section>
-    </section>
+        <div class="dog-card">
+            <img src="images/boxed.jfif" alt="Dog 2" />
+            <h3>Boxer</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="images/german sherped.jfif" alt="Dog 4" />
+            <h3>German Shepherd</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
 
-    <section id="userSection" class="users-section hide">
-        <section class="dogs-showcase">
-            <!-- Repeat dog cards or dynamically load -->
-            <div class="dog-card">
-                <img src="images/dd4.jfif" alt="Dog 1" />
-                <h3>Buddy</h3>
-                <p>2-year-old Golden Retriever</p>
-            </div>
-            <div class="dog-card">
-                <img src="images/dd8.jfif" alt="Dog 2" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="images/dd6.jfif" alt="Dog 3" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="images/dd7.jfif" alt="Dog 4" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="images/dd5.jfif" alt="Dog 2" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="images/dd9.jfif" alt="Dog 3" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <div class="dog-card">
-                <img src="images/luna.jfif" alt="Dog 4" />
-                <h3>Luna</h3>
-                <p>3-year-old German Shepherd</p>
-            </div>
-            <!-- Add more dog-cards as needed -->
-        </section>
+        <div class="dog-card">
+
+            <img src="images/siberian husky.webp" alt="Dog 4" />
+            <h3>Siberian husky</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="images/bull dog.jfif" alt="Dog 2" />
+            <h3>Bull Dog</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="images/buddy.jfif" alt="Dog 1" />
+            <h3>Buddy</h3>
+            <p>2-year-old Golden Retriever</p>
+        </div>
+        <div class="dog-card">
+
+            <img src="images/FRENCH bull dog.jfif" alt="Dog 4" />
+            <h3>French bull dog</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="images/dd1.jfif " alt="Dog 2" />
+            <h3>Buddy</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <div class="dog-card">
+            <img src="images/dd6.jfif" alt="Dog 3" />
+            <h3>Max</h3>
+            <p>3-year-old German Shepherd</p>
+        </div>
+        <!-- Add more dog-cards as needed -->
+    </section>
 
     </section>
     <footer class="simple-footer">
@@ -579,4 +602,4 @@
 </body>
 
 
-</html>
+</html>//

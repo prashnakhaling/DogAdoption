@@ -171,6 +171,37 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     .delete-btn:hover {
       background-color: darkred;
     }
+
+    .datetime-box {
+      background: #2e3b4e;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #clock {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    #calendar {
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
+    .datetime-box {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #2e3b4e;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -216,7 +247,10 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
         <p>89</p>
       </div>
     </div>
-
+    <div class="datetime-box">
+      <div id="clock"></div>
+      <div id="calendar"></div>
+    </div>
     <h2>Dog Listings</h2>
     <table>
       <thead>
@@ -289,6 +323,29 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
       document.querySelectorAll('.modal').forEach(modal => {
         if (e.target === modal) modal.style.display = 'none';
       });
+      // Live Clock & Calendar
+      function updateDateTime() {
+        const now = new Date();
+
+        const time = now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        const date = now.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+
+        document.getElementById('clock').innerHTML = time;
+        document.getElementById('calendar').innerHTML = date;
+      }
+
+      setInterval(updateDateTime, 1000);
+      updateDateTime();
     };
   </script>
 
