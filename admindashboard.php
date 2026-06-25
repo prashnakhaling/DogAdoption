@@ -32,7 +32,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
 
     .sidebar {
       width: 220px;
-      background: #2e3b4e;
+      background: #adb2d4;
       color: white;
       height: 100vh;
       position: fixed;
@@ -51,7 +51,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     }
 
     .sidebar a:hover {
-      background: #1e2a38;
+      background: #adb2d4;
     }
 
     .main {
@@ -149,7 +149,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
 
     button[type="submit"],
     #addDogBtn {
-      background-color: rgb(3, 19, 109);
+      background-color: #858ec6;
       color: white;
       border: none;
       border-radius: 5px;
@@ -157,7 +157,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     }
 
     button:hover,
-    #addDogBtn:hover background-color: :rgb(3, 19, 109);
+    #addDogBtn:hover background-color: :rgb(109, 3, 72);
 
     .delete-btn {
       background-color: red;
@@ -173,7 +173,10 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     }
 
     .datetime-box {
-      background: #2e3b4e;
+      background: #8b92c0;
+
+
+
       color: white;
       padding: 15px;
       border-radius: 10px;
@@ -196,7 +199,9 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
       position: absolute;
       top: 20px;
       right: 20px;
-      background: #2e3b4e;
+      background: #adb2d4;
+
+
       color: white;
       padding: 15px 25px;
       border-radius: 10px;
@@ -227,6 +232,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     <a href="#">Dashboard</a>
     <a href="#" id="addDogBtn">Add Dog</a>
     <a href="#" id="pendingAppBtn">Applications</a>
+    <a href="adminchat.php">Chat</a>
     <a href="#">Settings</a>
   </div>
 
