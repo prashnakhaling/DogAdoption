@@ -232,7 +232,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     <a href="#">Dashboard</a>
     <a href="#" id="addDogBtn">Add Dog</a>
     <a href="#" id="pendingAppBtn">Applications</a>
-    <a href="adminchat.php">Chat</a>
+    <a href="admin_chatsupport.php">Chat</a>
     <a href="#">Settings</a>
   </div>
 

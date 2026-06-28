@@ -1,12 +1,15 @@
 <?php
+session_start();
 include 'dataconnection.php';
 
 if (isset($_POST['message']) && !empty($_POST['message'])) {
+
     $message = mysqli_real_escape_string($conn, $_POST['message']);
+    $sender = $_SESSION['username']; // Logged-in user's name
 
     mysqli_query($conn, "
-        INSERT INTO chat_messages(sender,receiver,message)
-        VALUES('User','Admin','$message')
+        INSERT INTO chat_messages(sender, receiver, message)
+        VALUES('$sender', 'Admin', '$message')
     ");
 }
 

@@ -51,6 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: admindashboard.php");
         exit();
     }
+    session_start();
+
+    $_SESSION['user_id'] = $row['id'];
+    $_SESSION['username'] = $row['fullname']; // or $row['name'], depending on your database
 
     // Invalid credentials
     $_SESSION['login_error'] = "Invalid email or password.";
