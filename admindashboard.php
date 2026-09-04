@@ -54,6 +54,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
       background: #adb2d4;
     }
 
+
     .main {
       margin-left: 240px;
       padding: 20px;
@@ -215,7 +216,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
   <!-- Modal Form -->
   <div id="dogModal" class="modal">
     <div class="modal-content">
-      <span class="closeBtn">&times;</span>
+      <span class="closeBtn">times;</span>
       <h2>Add New Dog</h2>
       <form action="doginsert.php" method="POST" enctype="multipart/form-data">
         <label>Breed:<br><input type="text" name="breed" required></label><br>
