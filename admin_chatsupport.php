@@ -1,4 +1,3 @@
-```php
 <?php
 session_start();
 include 'dataconnection.php';
@@ -918,4 +917,3 @@ if (isset($_POST['send'])) {
 </body>
 
 </html>
-```
