@@ -118,24 +118,34 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
+      overflow-y: hidden;
     }
 
     .modal-content {
       background-color: #fff;
-      margin: 10% auto;
+      margin: 30px auto;
       padding: 20px;
-      border-radius: 8px;
-      width: 100%;
-      max-width: 400px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: hidden;
       position: relative;
+      box-sizing: border-box;
     }
 
     .closeBtn {
       position: absolute;
-      top: 10px;
+      top: 8px;
       right: 15px;
-      font-size: 24px;
+      font-size: 28px;
+      font-weight: bold;
       cursor: pointer;
+      color: #555;
+    }
+
+    .closeBtn:hover {
+      color: red;
     }
 
     input,
@@ -208,6 +218,119 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
       border-radius: 10px;
       text-align: center;
     }
+
+    /* Applications Modal */
+    .applications-modal-content {
+      background-color: white;
+      margin: 5vh auto;
+      padding: 18px;
+      border-radius: 10px;
+
+      width: 90%;
+      max-width: 950px;
+
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    /* Smaller table area */
+    .applications-table-container {
+      width: 100%;
+      max-height: 55vh;
+      overflow-x: hidden;
+      overflow-y: hidden;
+
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    /* Smaller application table */
+    .applications-table {
+      width: 100%;
+      min-width: 850px;
+      border-collapse: collapse;
+      background: white;
+      font-size: 12px;
+    }
+
+    /* Smaller headings */
+    .applications-table th {
+      background-color: #858ec6;
+      color: white;
+      padding: 8px 6px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    /* Smaller cells */
+    .applications-table td {
+      padding: 7px 6px;
+      border-bottom: 1px solid #ddd;
+      white-space: nowrap;
+    }
+
+    /* Smaller status */
+    .status-pending,
+    .status-accepted,
+    .status-rejected {
+      padding: 4px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    /* Pending */
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    /* Accepted */
+    .status-accepted {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    /* Rejected */
+    .status-rejected {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Smaller buttons */
+    .accept-btn,
+    .reject-btn {
+      width: auto;
+      padding: 5px 8px;
+      margin: 1px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .accept-btn {
+      background-color: #4CAF50;
+    }
+
+    .reject-btn {
+      background-color: #e74c3c;
+    }
+
+    .accept-btn:hover {
+      background-color: #388e3c;
+    }
+
+    .reject-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .completed-text {
+      font-size: 11px;
+      color: #777;
+    }
   </style>
 </head>
 
@@ -216,7 +339,7 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
   <!-- Modal Form -->
   <div id="dogModal" class="modal">
     <div class="modal-content">
-      <span class="closeBtn">times;</span>
+      <span class="closeBtn" data-modal="dogModal">&times;</span>
       <h2>Add New Dog</h2>
       <form action="doginsert.php" method="POST" enctype="multipart/form-data">
         <label>Breed:<br><input type="text" name="breed" required></label><br>
@@ -296,76 +419,243 @@ $dogsResult = $conn->query("SELECT dog_id, dog_breed, age, dog_image, added_date
     </footer>
   </div>
 
+
   <script>
-    document.getElementById('addDogBtn').onclick = () => document.getElementById('dogModal').style.display = 'block';
-    document.querySelector('.closeBtn').onclick = () => document.getElementById('dogModal').style.display = 'none';
-    window.onclick = e => {
-      if (e.target === document.getElementById('dogModal')) {
-        document.getElementById('dogModal').style.display = 'none';
-      }
-    };
+    document.addEventListener("DOMContentLoaded", function() {
 
-    // Open Add Dog Modal
-    document.getElementById('addDogBtn').onclick = () => {
-      document.getElementById('dogModal').style.display = 'block';
-    };
-
-    // Close buttons
-    document.querySelectorAll('.closeBtn').forEach(btn => {
-      btn.onclick = () => {
-        const modalId = btn.getAttribute('data-modal') || 'dogModal';
-        document.getElementById(modalId).style.display = 'none';
-      };
-    });
-
-    // Open Applications Modal
-    document.getElementById('pendingAppBtn').onclick = () => {
-      document.getElementById('applicationsModal').style.display = 'block';
-    };
-
-
-
-    // Close modal when clicking outside
-    window.onclick = function(e) {
-      document.querySelectorAll('.modal').forEach(modal => {
-        if (e.target === modal) modal.style.display = 'none';
+      // Add Dog button
+      document.getElementById("addDogBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        document.getElementById("dogModal").style.display = "block";
       });
-      // Live Clock & Calendar
+
+      // Applications button
+      document.getElementById("pendingAppBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        document.getElementById("applicationsModal").style.display = "block";
+      });
+
+      // Close buttons
+      document.querySelectorAll(".closeBtn").forEach(function(button) {
+
+        button.addEventListener("click", function() {
+
+          const modalId = button.getAttribute("data-modal");
+
+          if (modalId) {
+            document.getElementById(modalId).style.display = "none";
+          }
+
+        });
+
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", function(event) {
+
+        if (event.target.classList.contains("modal")) {
+          event.target.style.display = "none";
+        }
+
+      });
+
+      // Clock and calendar
       function updateDateTime() {
+
         const now = new Date();
 
-        const time = now.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
+        const time = now.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
         });
 
-        const date = now.toLocaleDateString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
+        const date = now.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
         });
 
-        document.getElementById('clock').innerHTML = time;
-        document.getElementById('calendar').innerHTML = date;
+        document.getElementById("clock").innerHTML = time;
+        document.getElementById("calendar").innerHTML = date;
       }
 
-      setInterval(updateDateTime, 1000);
       updateDateTime();
-    };
+      setInterval(updateDateTime, 1000);
+
+    });
   </script>
 
-</body>
-<!-- Applications Modal -->
-<div id="applicationsModal" class="modal">
-  <div class="modal-content">
-    <span class="closeBtn" data-modal="applicationsModal">&times;</span>
-    <h2>Applications</h2>
-    <p>List of adoption applications goes here...</p>
-  </div>
-</div>
+  </div> <!-- end main -->
 
+
+  <!-- Applications Modal -->
+  <div id="applicationsModal" class="modal">
+
+    <div class="applications-modal-content">
+
+      <span class="closeBtn" data-modal="applicationsModal">&times;</span>
+
+      <h2>Adoption Applications</h2>
+
+      <?php
+      $applicationsResult = $conn->query("
+          SELECT id, fullname, email, phone, address, dogname, status
+          FROM adoptions
+          ORDER BY id DESC
+      ");
+      ?>
+
+      <div class="applications-table-container">
+
+        <table class="applications-table">
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Dog</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <?php if ($applicationsResult && $applicationsResult->num_rows > 0): ?>
+
+              <?php while ($application = $applicationsResult->fetch_assoc()): ?>
+
+                <tr>
+
+                  <td><?= (int)$application['id'] ?></td>
+
+                  <td>
+                    <?= htmlspecialchars($application['fullname']) ?>
+                  </td>
+
+                  <td>
+                    <?= htmlspecialchars($application['email']) ?>
+                  </td>
+
+                  <td>
+                    <?= htmlspecialchars($application['phone']) ?>
+                  </td>
+
+                  <td>
+                    <?= htmlspecialchars($application['address']) ?>
+                  </td>
+
+                  <td>
+                    <?= htmlspecialchars($application['dogname']) ?>
+                  </td>
+
+                  <td>
+
+                    <?php if ($application['status'] === 'Pending'): ?>
+
+                      <span class="status-pending">
+                        Pending
+                      </span>
+
+                    <?php elseif ($application['status'] === 'Accepted'): ?>
+
+                      <span class="status-accepted">
+                        Accepted
+                      </span>
+
+                    <?php elseif ($application['status'] === 'Rejected'): ?>
+
+                      <span class="status-rejected">
+                        Rejected
+                      </span>
+
+                    <?php endif; ?>
+
+                  </td>
+
+                  <td>
+
+                    <?php if ($application['status'] === 'Pending'): ?>
+
+                      <form action="accept_application.php"
+                        method="POST"
+                        style="display:inline;">
+
+                        <input type="hidden"
+                          name="application_id"
+                          value="<?= (int)$application['id'] ?>">
+
+                        <button type="submit"
+                          class="accept-btn">
+                          Accept
+                        </button>
+
+                      </form>
+
+                      <form action="reject_application.php"
+                        method="POST"
+                        style="display:inline;">
+
+                        <input type="hidden"
+                          name="application_id"
+                          value="<?= (int)$application['id'] ?>">
+
+                        <button type="submit"
+                          class="reject-btn">
+                          Reject
+                        </button>
+
+                      </form>
+
+                    <?php else: ?>
+
+                      <span class="completed-text">
+                        Completed
+                      </span>
+
+                    <?php endif; ?>
+
+                  </td>
+
+                </tr>
+
+              <?php endwhile; ?>
+
+            <?php else: ?>
+
+              <tr>
+                <td colspan="8" style="text-align:center;">
+                  No adoption applications found.
+                </td>
+              </tr>
+
+            <?php endif; ?>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+</body>
+
+</html>
+
+<?php
+$dogsResult->free();
+$conn->close();
+?>
+</body>
 
 
 </html>
